@@ -1,0 +1,19 @@
+{
+  "name": "mylib",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:lossurdo/mylib.git",
+  "author": "Rafael Lossurdo <lossurdo@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "w": "yarn run tsc --watch"
+  },
+  "dependencies": {
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "express": "^4.18.1",
+    "@types/uuid": "^8.3.4",
+    "typescript": "^4.7.4"
+  }
+}
