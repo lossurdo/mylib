@@ -6,7 +6,7 @@
   "author": "Rafael Lossurdo <lossurdo@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "w": "yarn run tsc --watch",
+    "w": "rollup --config rollup.config.ts -w",
     "del": "rm -rf dist"
   },
   "dependencies": {
@@ -15,6 +15,13 @@
   "devDependencies": {
     "@types/uuid": "^8.3.4",
     "express": "^4.18.1",
+    "rollup": "^2.77.2",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-json": "^4.0.0",
+    "rollup-plugin-node-builtins": "^2.1.2",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-sourcemaps": "^0.6.3",
+    "rollup-plugin-typescript2": "^0.32.1",
     "typescript": "^4.7.4"
   }
 }
