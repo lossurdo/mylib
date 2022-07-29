@@ -6,14 +6,15 @@
   "author": "Rafael Lossurdo <lossurdo@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "w": "yarn run tsc --watch"
+    "w": "yarn run tsc --watch",
+    "del": "rm -rf dist"
   },
   "dependencies": {
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "express": "^4.18.1",
     "@types/uuid": "^8.3.4",
+    "express": "^4.18.1",
     "typescript": "^4.7.4"
   }
 }
