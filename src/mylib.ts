@@ -7,13 +7,22 @@ import jsonpath from "jsonpath"
  * Fontes:
  * https://www.npmjs.com/package/jsonpath
  * https://randomuser.me/documentation
+ * https://api.jquery.com/jquery.ajax/
  */
 export default class MyLib {
 
-    mainDiv: HTMLElement | null;
+    private mainDiv: HTMLElement | null;
 
+    /**
+     * Construtor
+     * 
+     * @param mainDivID Nome do ID da div que receberá os elementos
+     */
     constructor(mainDivID:string) {
         this.mainDiv = document.getElementById(mainDivID)
+        const frm = document.createElement("form")
+        frm.setAttribute("id", "frm")
+        this.mainDiv?.appendChild(frm)
         this.render()
     }
 
@@ -31,6 +40,10 @@ export default class MyLib {
         return tag
     }
 
+    /**
+     * Renderiza os componentes HTML na interface
+     * conforme o JSON definido.
+     */
     private render() {
         json.forEach(obj => {
             const temp = document.createElement(this.tagConverter(obj.objeto))
@@ -40,6 +53,11 @@ export default class MyLib {
 
             switch (obj.objeto) {
                 case "input":
+                    temp.setAttribute("size", this.getJsonValue(obj, "tamanho") || "20")
+                    temp.setAttribute("type", this.getJsonValue(obj, "tipo") || "text")
+                    break;
+
+                case "input-rest":
                     temp.setAttribute("size", this.getJsonValue(obj, "tamanho") || "20")
                     temp.setAttribute("type", this.getJsonValue(obj, "tipo") || "text")
                     break;
@@ -63,10 +81,10 @@ export default class MyLib {
                     break;
         
                 case "select-rest":
-                    const din = this.getJsonValue(obj, "dinamica") as typeof dinamica
-                    const url = din.url
-                    const chave = din.campo_chave
-                    const valor = din.campo_valor
+                    const dynamic = this.getJsonValue(obj, "dinamica") as typeof dinamica
+                    const url = dynamic.url
+                    const chave = dynamic.campo_chave
+                    const valor = dynamic.campo_valor
 
                     $.ajax({
                         dataType: "json",
@@ -74,7 +92,7 @@ export default class MyLib {
                         success: (data) => {
                             let k = jsonpath.query(data, chave)
                             let v = jsonpath.query(data, valor)
-                            for(let i=0; i<k.length; i++) {
+                            for (let i = 0; i < k.length; i++) {
                                 const opt = document.createElement("option")
                                 opt.setAttribute("value", k[i] || uuid())
                                 opt.textContent = v[i] || uuid()
@@ -83,6 +101,9 @@ export default class MyLib {
                         },
                         error: (err) => {
                             console.log(err)
+                            const opt = document.createElement("option")
+                            opt.textContent = "**ERRO NA COMUNICAÇÃO**"
+                            temp.appendChild(opt)
                         }
                     })
                     break;
@@ -141,11 +162,27 @@ const json = [
     {
         "objeto": "input",
         "tamanho": "40",
-        "tipo": "number",
+        "tipo": "text",
         "id": "xxx",
         "nome": "yyy",
         "titulo": "Nome completo",
         "zzz": "zzz"
+    },
+    {
+        "objeto": "input",
+        "tamanho": "40",
+        "tipo": "password",
+        "id": "xasdasdxx",
+        "nome": "yyadady",
+        "titulo": "Senha"
+    },    
+    {
+        "objeto": "input",
+        "tamanho": "40",
+        "tipo": "number",
+        "id": "aaaaaddd",
+        "nome": "yyadddddady",
+        "titulo": "Idade"
     },
     {
         "objeto": "textarea",
@@ -156,15 +193,27 @@ const json = [
         "titulo": "Observação"
     },
     {
+        "objeto": "input-rest",
+        "tamanho": "40",
+        "tipo": "text",
+        "id": "x66xx",
+        "nome": "y77yy",
+        "titulo": "Input dinâmico",
+        "dinamica": {
+            "url": "https://randomuser.me/api/?results=5&nat=us",
+            "campo_chave": "$..id.value",
+            "campo_valor": "$..name.last" 
+        }
+    },
+    {
         "objeto": "select",
         "tamanho": "60",
         "id": "xxxt",
         "nome": "yyyt",
         "titulo": "Escolha estática",
         "opcoes": [
-            { "k": "A", "v": "Valor A" },
-            { "k": "B", "v": "Valor B" },
-            { "k": "C", "v": "Valor C" },
+            { "k": "S", "v": "SIM" },
+            { "k": "N", "v": "NÃO" },
         ]
     },
     {
