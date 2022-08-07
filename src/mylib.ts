@@ -145,6 +145,7 @@ export default class MyLib {
         // TODO: Remover
         const btn = document.createElement("button")
         btn.setAttribute("type", "submit")
+        btn.setAttribute("class", "button-primary")
         btn.textContent = "ENVIAR"
         this.mainDiv?.appendChild(btn)
         
