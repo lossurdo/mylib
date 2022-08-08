@@ -20,9 +20,6 @@ export default class MyLib {
      */
     constructor(mainDivID:string) {
         this.mainDiv = document.getElementById(mainDivID)
-        // const frm = document.createElement("form")
-        // frm.setAttribute("id", "frm")
-        // frm.appendChild(this.mainDiv || document.createElement("div"))
         this.render()
     }
 
@@ -51,6 +48,14 @@ export default class MyLib {
             temp.setAttribute("name", this.getJsonValue(obj, "nome") || uuid())
             temp.setAttribute("class", "u-full-width u-max-full-width")
 
+            if (["input", "textarea"].find(x => this.tagConverter(x)) && this.getJsonValue(obj, "required") == "true") {
+                temp.setAttribute("required", "true")
+            } else if(["select"].find(x => this.tagConverter(x))) {
+                const opt = document.createElement("option")
+                opt.textContent = "Aguarde, carregando..."
+                temp.appendChild(opt)
+            }
+
             switch (obj.objeto) {
                 case "input":
                     temp.setAttribute("size", this.getJsonValue(obj, "tamanho") || "20")
@@ -58,15 +63,6 @@ export default class MyLib {
                     if (temp.getAttribute("type") === 'password') {
                         temp.setAttribute("placeholder", "🔐 Digite a senha...")
                     }
-                    if (this.getJsonValue(obj, "required") == "true") {
-                        temp.setAttribute("required", "true")
-                    }
-                    break;
-
-                case "input-rest":
-                    temp.setAttribute("size", this.getJsonValue(obj, "tamanho") || "20")
-                    temp.setAttribute("type", this.getJsonValue(obj, "tipo") || "text")
-                    temp.setAttribute("placeholder", "🔎 Pesquise e aguarde o resultado...")
                     break;
 
                 case "textarea":
@@ -97,6 +93,7 @@ export default class MyLib {
                         dataType: "json",
                         url: url,
                         success: (data) => {
+                            temp.lastChild?.remove()
                             let k = jsonpath.query(data, chave)
                             let v = jsonpath.query(data, valor)
                             for (let i = 0; i < k.length; i++) {
@@ -119,9 +116,11 @@ export default class MyLib {
                     break;
             }
 
+            // PROPRIEDADE ===========================================
             const divProp = document.createElement("div")
             divProp.setAttribute("class", "row")
 
+            // LABEL =================================================
             const divLabel = document.createElement("div")
             divLabel.setAttribute("class", "three columns")
             const lbl = document.createElement("label")
@@ -132,6 +131,7 @@ export default class MyLib {
             }
             divLabel.appendChild(lbl)
 
+            // INPUT =================================================
             const divInput = document.createElement("div")
             divInput.setAttribute("class", "nine columns")
             divInput.appendChild(temp)
@@ -140,15 +140,7 @@ export default class MyLib {
             divProp.appendChild(divInput)
 
             this.mainDiv?.appendChild(divProp)
-        }); 
-        
-        // TODO: Remover
-        const btn = document.createElement("button")
-        btn.setAttribute("type", "submit")
-        btn.setAttribute("class", "button-primary")
-        btn.textContent = "ENVIAR"
-        this.mainDiv?.appendChild(btn)
-        
+        });
     }
 
     /**
@@ -209,20 +201,8 @@ const json = [
         "linhas": "3",
         "id": "xxx",
         "nome": "yyy",
-        "titulo": "Observação"
-    },
-    {
-        "objeto": "input-rest",
-        "tamanho": "40",
-        "tipo": "text",
-        "id": "x66xx",
-        "nome": "y77yy",
-        "titulo": "Input dinâmico",
-        "dinamica": {
-            "url": "https://randomuser.me/api/?results=5&nat=us",
-            "campo_chave": "$..id.value",
-            "campo_valor": "$..name.last" 
-        }
+        "titulo": "Observação",
+        "required": "true"
     },
     {
         "objeto": "select",
